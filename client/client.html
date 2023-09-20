@@ -6,7 +6,32 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
 
   <script>
+    let page;
+    let type;
+    let button;
+    let response;
+    let options;
+    const sendData = () => fetch(page.value, options);
 
+    window.onload = () => {
+      page = document.querySelector("#page");
+      type = document.querySelector("#type");
+      button = document.querySelector("#send");
+      response = document.querySelector("#content");
+
+      button.onclick = () => {
+        let returned;
+
+        options = {
+          method: 'GET',
+          headers: {'Accept': type.value},
+        }
+
+        returned = sendData();
+
+        response.innerHTML = returned;
+      }
+    }
   </script>
 </head>
 
