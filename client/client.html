@@ -24,12 +24,14 @@
 
         options = {
           method: 'GET',
-          headers: {'Accept': type.value},
+          headers: { 'accept': type.value },
         }
 
         returned = sendData();
 
-        response.innerHTML = returned;
+        returned.then((e) => {
+          response.innerHTML = e.message;
+        })
       }
     }
   </script>

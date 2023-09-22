@@ -2,6 +2,7 @@ const http = require('http');
 const url = require('url');
 const htmlHandler = require('./htmlResponses.js');
 const jsonHandler = require('./jsonResponses.js');
+const headHandler = require('./headResponses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
@@ -9,6 +10,7 @@ const urlStruct = {
   GET: {
     '/': htmlHandler.getIndex,
     '/style.css': htmlHandler.getCSS,
+    '/success': headHandler.successRequest,
     notFound: jsonHandler.notFound,
   },
   HEAD: {
