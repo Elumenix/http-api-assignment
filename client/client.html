@@ -11,6 +11,8 @@
     let button;
     let response;
     let options;
+    let display;
+
     const sendData = () => fetch(page.value, options);
 
     window.onload = () => {
@@ -18,6 +20,17 @@
       type = document.querySelector("#type");
       button = document.querySelector("#send");
       response = document.querySelector("#content");
+
+      // create a new field to hold the ID
+      display = document.createElement("div");
+      display.id = "display";
+      display.style.fontWeight = "bold";
+      display.style.marginTop = "100px";
+      display.style.fontSize = "2em";
+      display.style.textAlign = "center";
+      display.style.marginBottom = "-80px";
+      response.parentNode.insertBefore(display, response);
+
 
       button.onclick = () => {
         let returned;
@@ -43,6 +56,32 @@
         }).then((data) => {
           console.log(data);
           let message;
+
+          // Couldn't have just used the ID or statusText instead; dumb part of assignment
+          switch (page.value) {
+            case "/success":
+              display.innerHTML = "Success";
+              break;
+            case "/badRequest":
+              display.innerHTML = "Bad Request";
+              break;
+            case "/unauthorized":
+              display.innerHTML = "Unauthorized";
+              break;
+            case "/forbidden":
+              display.innerHTML = "Forbidden";
+              break;
+            case "/internal":
+              display.innerHTML = "Internal Server Error";
+              break;
+            case "/notImplemented":
+              display.innerHTML = "Not Implemented";
+              break;
+            case "/notFound":
+            default:
+              display.innerHTML = "Resource Not Found";
+              break;
+          }
 
           if (type.value == "text/xml") {
             // Series of steps needed to read an xml attribute. I hate it
