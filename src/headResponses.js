@@ -3,8 +3,7 @@ const successRequest = (request, response) => {
 
   let content;
   if (request.headers.accept === 'text/xml') {
-    content = '<response></response>>';
-    content.setAttribute('message', 'This is a successful response');
+    content = '<response><message>This is a successful response</message></response>';
   } else {
     content = {
       message: 'This is a successful response',

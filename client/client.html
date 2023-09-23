@@ -29,8 +29,32 @@
 
         returned = sendData();
 
-        returned.then((e) => {
-          response.innerHTML = e.message;
+
+        returned.then((response) => {
+          // Promise is read from asynchronosly, so a second .then statement
+          // is necessary after I specify what I want to read from the response
+          // I possibly could have used an await instead but I'm not familiar with them
+          if (type.value == "text/xml") {
+            return response.text();
+          }
+          else {
+            return response.json();
+          }
+        }).then((data) => {
+          console.log(data);
+          let message;
+
+          if (type.value == "text/xml") {
+            // Series of steps needed to read an xml attribute. I hate it
+            const parsedResponse = new window.DOMParser().parseFromString(data, 'text/xml');
+            message = parsedResponse.querySelector("message").textContent;
+          }
+          else {
+            // So simple in comparison
+            message = data.message;
+          }
+
+          response.innerHTML = "Message: " + message;
         })
       }
     }
