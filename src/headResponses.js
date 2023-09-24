@@ -1,3 +1,5 @@
+const url = require('url');
+
 const successRequest = (request, response) => {
   response.writeHead(200, { 'Content-Type': request.headers.accept });
 
@@ -16,16 +18,29 @@ const successRequest = (request, response) => {
 };
 
 const badRequest = (request, response) => {
-  response.writeHead(400, { 'Content-Type': request.headers.accept });
+  const parsedUrl = url.parse(request.url, true);
+
+  if (parsedUrl.query.valid === 'true') {
+    response.writeHead(200, { 'Content-Type': request.headers.accept });
+  } else {
+    response.writeHead(400, { 'Content-Type': request.headers.accept });
+  }
 
   let content;
   if (request.headers.accept === 'text/xml') {
     content = '<response><message>Missing valid query parameter set to true</message><id>badRequest</id></response>';
   } else {
-    content = {
-      message: 'Missing valid query parameter set to true',
-      id: 'badRequest',
-    };
+    // This sequence of instructions can only happen through the url, which is only json
+    if (parsedUrl.query.valid === 'true') {
+      content = {
+        message: 'This request has the required parameters',
+      };
+    } else {
+      content = {
+        message: 'Missing valid query parameter set to true',
+        id: 'badRequest',
+      };
+    }
     content = JSON.stringify(content);
   }
 
@@ -34,16 +49,29 @@ const badRequest = (request, response) => {
 };
 
 const unauthorizedRequest = (request, response) => {
-  response.writeHead(401, { 'Content-Type': request.headers.accept });
+  const parsedUrl = url.parse(request.url, true);
+
+  if (parsedUrl.query.loggedIn === 'yes') {
+    response.writeHead(200, { 'Content-Type': request.headers.accept });
+  } else {
+    response.writeHead(401, { 'Content-Type': request.headers.accept });
+  }
 
   let content;
   if (request.headers.accept === 'text/xml') {
     content = '<response><message>Missing loggedIn query parameter set to yes</message><id>unauthorized</id></response>';
   } else {
-    content = {
-      message: 'Missing loggedIn query parameter set to yes',
-      id: 'unauthorized',
-    };
+    // This is done through the url, so it only needs to be checked in json
+    if (parsedUrl.query.loggedIn === 'yes') {
+      content = {
+        message: 'You have successfully viewed the content.',
+      };
+    } else {
+      content = {
+        message: 'Missing loggedIn query parameter set to yes',
+        id: 'unauthorized',
+      };
+    }
     content = JSON.stringify(content);
   }
 

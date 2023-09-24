@@ -27,6 +27,10 @@ const onRequest = (request, response) => {
 
   const parsedUrl = url.parse(request.url);
 
+  if (request.headers.accept !== 'application/json' && request.headers.accept !== 'text/xml') {
+    request.headers.accept = 'application/json';
+  }
+
   if (!urlStruct[request.method]) {
     return urlStruct.HEAD.notFound(request, response);
   }
